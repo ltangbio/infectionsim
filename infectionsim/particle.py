@@ -1,6 +1,7 @@
 """
 Module for particles which simulate people in an infection simulation.
 """
+import random
 
 
 class Particle:
@@ -20,8 +21,7 @@ class Particle:
     is_infected : bool
         Tracks whether the actor is infected.
     infection_timer : float, optional
-        Time until the actor is no longer infected (either recovers or dies,).
-        Value of `None` if the actor is not infected.
+        Time until the actor is no longer infected (either recovers or dies).
     is_alive : bool
         Determines whether the actor is alive (default is True).
     has_recovered : bool
@@ -143,10 +143,11 @@ class Particle:
         ----------
         other : Particle
             The other particle that `self` is colliding with.
-
-        Raises
-        ------
-        NoteImplementedError
-            Because the functionality has not been implemented.
         """
-        raise NotImplementedError
+        if (self._is_infected and not other._is_infected):
+            if random.random() < self._transmission_prob and random.random() < other._infection_prob:
+                other._is_infected = True
+
+        if other._is_infected and not self._is_infected:
+            if random.random() < other._transmission_prob and random.random() < self._infection_prob:
+                self._is_infected = True
